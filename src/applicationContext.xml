@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- 开启注解模式 -->
+    <mvc:annotation-driven/>
+    <!-- 指定需要扫面的包 -->
+   	<context:component-scan base-package="com.wx"/>
+   <!-- 初始化执行一次方法 --> 
+	<bean id="initMeath" class="com.wx.quart.getToken" init-method="initToken"/>
+  <!-- 配置容器 -->
+  <!-- 配置数据源 -->
+  <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+  	<property name="driverClass" value="com.mysql.jdbc.Driver"/>
+    	<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/flowers?useUnicode=true&amp;characterEncoding=UTF-8"/><!-- ?useUnicode=true&amp;characterEncoding=UTF-8 -->
+    	<property name="user" value="root"/>
+    	<property name="password" value="123456"/>
+  </bean>
+  <!-- 配置sqlsessionfactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 注入dataSource -->
+		<property name="dataSource" ref="dataSource"/>
+		<!-- 向 sqlSessionFactory提供mybatis的配置文件-->
+		<property name="configLocation" value="classpath:mybatis.xml"/>
+	</bean>
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!--  提供sqlSessionFactory  -->
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<!-- 为我们的mapper扫描器提供需要扫描的包，雨果有多个包用逗号隔开 -->
+		<property name="basePackage" value="com.wx.mapper"/>
+	</bean>
+   <bean id="jobDetail"   class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+	 	<!--   目标类 　-->
+	     <property name="jobClass"  value="com.wx.quart.getToken"></property>
+    </bean> 
+	
+	
+	<!-- 另一种触发器是CornTrigger -->
+ 	<bean id="cornTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	   <property name="jobDetail" ref="jobDetail"/>
+	   <!-- 秒 分 小时 日期。。。。 -->
+	   <property name="cronExpression" value="0 0 */1 * * ?"/><!-- 
+	      每隔5秒执行一次：*/5 * * * * ?
+                 每隔1分钟执行一次：0 */1 * * * ?
+                 每天23点执行一次：0 0 23 * * ?
+                 每天凌晨1点执行一次：0 0 1 * * ?
+                 每月1号凌晨1点执行一次：0 0 1 1 * ?
+                 每月最后一天23点执行一次：0 0 23 L * ?
+                 每周星期天凌晨1点实行一次：0 0 1 ? * L
+                 在26分、29分、33分执行一次：0 26,29,33 * * * ?
+                 每天的0点、13点、18点、21点都执行一次：0 0 0,13,18,21 * * ?
+	    -->
+	</bean> 
+	
+	<!-- 定义核心调度器 -->
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	  <property name="triggers">
+	    	<ref bean="cornTrigger"/>
+	  </property>
+	</bean>
+</beans>

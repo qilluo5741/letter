@@ -1,0 +1,4 @@
+#Wed Dec 30 15:25:27 CST 2015
+eclipse.preferences.version=1
+validator.Checked=WebRoot/top.jsp,WebRoot/color/colorInfoInsert.jsp,WebRoot/login.jsp
+validator.Unchecked=
