@@ -17,42 +17,42 @@ import com.wx.util.LogUtil;
 import com.wx.util.MessageUtil;
 import com.wx.util.SHA1;
 /**
- * ½Ó¿ÚÈë¿Ú
+ * æ¥å£å…¥å£
  */
 @Controller
 public class MainController {
-	//Õâ¸öTokenÊÇ¸øÎ¢ĞÅ¿ª·¢Õß½ÓÈëÊ±ÌîµÄ
-    //¿ÉÒÔÊÇÈÎÒâÓ¢ÎÄ×ÖÄ¸»òÊı×Ö£¬³¤¶ÈÎª3-32×Ö·û
-    private static String Token = "niewei";
+	//è¿™ä¸ªTokenæ˜¯ç»™å¾®ä¿¡å¼€å‘è€…æ¥å…¥æ—¶å¡«çš„
+    //å¯ä»¥æ˜¯ä»»æ„è‹±æ–‡å­—æ¯æˆ–æ•°å­—ï¼Œé•¿åº¦ä¸º3-32å­—ç¬¦
+    private static String Token = "weiixn123";
     @RequestMapping(value="main",method=RequestMethod.POST)
     @ResponseBody
 	public void mainPost(HttpServletRequest request, HttpServletResponse response){
     	try {
-    		//ÉèÖÃÇëÇó±àÂë£¬ÒÔ¼°ÏàÓ¦±àÂë
+    		//è®¾ç½®è¯·æ±‚ç¼–ç ï¼Œä»¥åŠç›¸åº”ç¼–ç 
 			request.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html;charset=UTF-8");
-			//ÏìÓ¦
+			//å“åº”
 			PrintWriter out=response.getWriter();
-			//½ÓÊÜ´«¹ıÀ´µÄĞÅÏ¢ ²¢×ª»»³É¼üÖµ¶ÔµÄ¼¯ºÏ
+			//æ¥å—ä¼ è¿‡æ¥çš„ä¿¡æ¯ å¹¶è½¬æ¢æˆé”®å€¼å¯¹çš„é›†åˆ
 			Map<String, String> map;
 			map = MessageUtil.xmlToMap(request);
-			//¿ª·¢ÕßÎ¢ĞÅºÅ
+			//å¼€å‘è€…å¾®ä¿¡å·
 			String toUserName=map.get("ToUserName"); 
-			//·¢ËÍ·½ÕÊºÅ£¨Ò»¸öOpenID£©
+			//å‘é€æ–¹å¸å·ï¼ˆä¸€ä¸ªOpenIDï¼‰
 			String fromUserName=map.get("FromUserName");
-			// ÎÄ±¾ÏûÏ¢ÄÚÈİ
+			// æ–‡æœ¬æ¶ˆæ¯å†…å®¹
 			String content	=map.get("Content");
-			//²âÊÔ  ÓÃ»§·¢ËÍµÄÎÄ×Ö£¬×é×°ÎÄ×ÖÏûÏ¢,ÒÔxmlĞÎÊ½¡£·µ»ØÓÃ»§
+			//æµ‹è¯•  ç”¨æˆ·å‘é€çš„æ–‡å­—ï¼Œç»„è£…æ–‡å­—æ¶ˆæ¯,ä»¥xmlå½¢å¼ã€‚è¿”å›ç”¨æˆ·
 			String message=MessageUtil.initText(toUserName, fromUserName, content);
-			out.print(message);//·µ»Ø
-			out.close();//¹Ø±Õ
+			out.print(message);//è¿”å›
+			out.close();//å…³é—­
 		} catch (Exception e) {
-			//Ìí¼ÓÈÕÖ¾¼ÇÂ¼ĞÅÏ¢
-			LogUtil.getInstance().warn("Î¢ĞÅ·şÎñÆ÷Èë¿ÚPostÇëÇó´íÎó£¡¿ÉÄÜ²»ÊÇÀ´×ÔÎ¢ĞÅÇëÇó£¡");
+			//æ·»åŠ æ—¥å¿—è®°å½•ä¿¡æ¯
+			LogUtil.getInstance().warn("å¾®ä¿¡æœåŠ¡å™¨å…¥å£Postè¯·æ±‚é”™è¯¯ï¼å¯èƒ½ä¸æ˜¯æ¥è‡ªå¾®ä¿¡è¯·æ±‚ï¼");
 		} 
 	}
     /***
-     *  Î¢ĞÅtokenÅäÖÃ
+     *  å¾®ä¿¡tokené…ç½®
      * @param request
      * @param response
      * @return 
@@ -60,16 +60,16 @@ public class MainController {
     @RequestMapping(value="main",method=RequestMethod.GET)
     @ResponseBody 
 	public String mainGet(WeChat we){
-    	//ÑéÖ¤URLÕæÊµĞÔ
-        String signature = we.getSignature();// Î¢ĞÅ¼ÓÃÜÇ©Ãû
-        String timestamp =we.getTimestamp();// Ê±¼ä´Á
-        String nonce = we.getNonce();// Ëæ»úÊı
-        String echostr = we.getEchostr();//Ëæ»ú×Ö·û´®
+    	//éªŒè¯URLçœŸå®æ€§
+        String signature = we.getSignature();// å¾®ä¿¡åŠ å¯†ç­¾å
+        String timestamp =we.getTimestamp();// æ—¶é—´æˆ³
+        String nonce = we.getNonce();// éšæœºæ•°
+        String echostr = we.getEchostr();//éšæœºå­—ç¬¦ä¸²
         List<String> params = new ArrayList<String>();
         params.add(Token);
         params.add(timestamp);
         params.add(nonce);
-        //1. ½«token¡¢timestamp¡¢nonceÈı¸ö²ÎÊı½øĞĞ×ÖµäĞòÅÅĞò
+        //1. å°†tokenã€timestampã€nonceä¸‰ä¸ªå‚æ•°è¿›è¡Œå­—å…¸åºæ’åº
         Collections.sort(params, new Comparator<String>() {
             public int compare(String o1, String o2) {
                 try {
@@ -80,17 +80,17 @@ public class MainController {
             }
         });
 
-        //2. ½«Èı¸ö²ÎÊı×Ö·û´®Æ´½Ó³ÉÒ»¸ö×Ö·û´®½øĞĞsha1¼ÓÃÜ
+        //2. å°†ä¸‰ä¸ªå‚æ•°å­—ç¬¦ä¸²æ‹¼æ¥æˆä¸€ä¸ªå­—ç¬¦ä¸²è¿›è¡Œsha1åŠ å¯†
         String temp = SHA1.encode(params.get(0) + params.get(1) + params.get(2));
         if (temp.equals(signature)) {
         	try {
 				return echostr;
 			} catch (Exception e) {
-				LogUtil.getInstance().warn("×Ö·û´®½øĞĞsha1¼ÓÃÜ³ö´í£¡À´Ô´ÓÚÎ¢ĞÅÇëÇó£¡");
+				LogUtil.getInstance().warn("å­—ç¬¦ä¸²è¿›è¡Œsha1åŠ å¯†å‡ºé”™ï¼æ¥æºäºå¾®ä¿¡è¯·æ±‚ï¼");
 				return null;
 			}
         }
-       LogUtil.getInstance().warn("Î¢ĞÅ·şÎñÆ÷ÇëÇó´íÎó£¡²»ÊÇÀ´×ÔÎ¢ĞÅÇëÇó£¡");
+       LogUtil.getInstance().warn("å¾®ä¿¡æœåŠ¡å™¨è¯·æ±‚é”™è¯¯ï¼ä¸æ˜¯æ¥è‡ªå¾®ä¿¡è¯·æ±‚ï¼");
         return null;
 	}
 }
